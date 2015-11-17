@@ -25,6 +25,7 @@ type File struct {
 	logicalName string // foo.txt
 	Contents    io.Reader
 	section     string // The first directory
+	sections	[]string
 	dir         string // The full directory Path (minus file name)
 	ext         string // Just the ext (eg txt)
 	uniqueID    string // MD5 of the filename
@@ -49,6 +50,10 @@ func (f *File) BaseFileName() string {
 
 func (f *File) Section() string {
 	return f.section
+}
+
+func (f *File) Sections() []string {
+	return f.sections
 }
 
 func (f *File) LogicalName() string {
@@ -90,6 +95,7 @@ func NewFile(relpath string) *File {
 	_, f.logicalName = filepath.Split(f.relpath)
 	f.ext = strings.TrimPrefix(filepath.Ext(f.LogicalName()), ".")
 	f.section = helpers.GuessSection(f.Dir())
+	f.sections = helpers.ExtractSections(f.Dir())
 	f.uniqueID = helpers.Md5String(f.LogicalName())
 
 	return f

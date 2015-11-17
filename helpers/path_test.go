@@ -617,6 +617,43 @@ func TestGuessSection(t *testing.T) {
 	}
 }
 
+func TestExtractSections(t *testing.T) {
+	type test struct {
+		input string
+		expected []string
+	}
+
+	data := []test{
+		{"/", []string{}},
+		{"", []string{}},
+		{"/content", []string{}},
+		{"content/", []string{}},
+		{"/content/", []string{}}, // /content/ is a special case. It will never be the section
+		{"/blog", []string{}},
+		{"/blog/", []string{"blog"}},
+		{"blog", []string{}},
+		{"content/blog", []string{}},
+		{"/content/blog/", []string{"blog"}},
+		{"/content/blog", []string{}}, // Lack of trailing slash indicates 'blog' is not a directory.
+		{"content/blog/", []string{"blog"}},
+		{"/contents/myblog/", []string{"contents", "myblog"}},
+		{"/contents/yourblog", []string{"contents"}},
+		{"/contents/ourblog/", []string{"contents", "ourblog"}},
+		{"/content/myblog/", []string{"myblog"}},
+		{"/content/yourblog", []string{}},
+		{"/content/ourblog/", []string{"ourblog"}},
+		{"/content/ourblog/is-awesome/", []string{"ourblog", "is-awesome"}},
+		{"/content/ourblog/is-awesome/why", []string{"ourblog", "is-awesome"}},
+	}
+
+	for i, d := range data {
+		expected := ExtractSections(filepath.FromSlash(d.input))
+		if len(d.expected) != len(expected) {
+			t.Errorf("Test %d failed. Expected %q got %q", i, d.expected, expected)
+		}
+	}
+}
+
 func TestPathPrep(t *testing.T) {
 
 }

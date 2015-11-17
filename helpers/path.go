@@ -418,6 +418,36 @@ func GuessSection(in string) string {
 	return parts[0]
 }
 
+// ExtractSections returns all sections given a source path.
+func ExtractSections(in string) []string {
+	parts := strings.Split(in, FilePathSeparator)
+
+	// Needs to have at least a value and a slash
+	if len(parts) < 2 {
+		return []string{}
+	}
+
+	// If it doesn't have a leading slash and value and file or trailing slash, then return ""
+	if parts[0] == "" && len(parts) < 3 {
+		return []string{}
+	}
+
+	// strip leading slash
+	if parts[0] == "" {
+		parts = parts[1:]
+	}
+
+	// if first directory is "content", return second directory
+	if parts[0] == "content" {
+		if len(parts) > 2 {
+			return parts[1: len(parts) - 1]
+		}
+		return []string{}
+	}
+
+	return parts[: len(parts) - 1]
+}
+
 func PathPrep(ugly bool, in string) string {
 	if ugly {
 		return Uglify(in)
