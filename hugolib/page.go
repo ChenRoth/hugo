@@ -303,6 +303,10 @@ func (p *Page) Section() string {
 	return p.Source.Section()
 }
 
+func (p *Page) Sections() []string {
+	return p.Source.Sections()
+}
+
 func (p *Page) layouts(l ...string) []string {
 	if p.Layout != "" {
 		return layouts(p.Type(), p.Layout)

@@ -862,6 +862,18 @@ func TestSectionEvaluation(t *testing.T) {
 	}
 }
 
+func TestSectionsEvaluation(t *testing.T) {
+	page, _ := NewPage(filepath.FromSlash("red/blue/green/file1.md"))
+	expected_sections := []string{"red", "blue", "green"}
+	expected_sections_string := strings.Join(expected_sections, ",")
+	page.ReadFrom(strings.NewReader(SIMPLE_PAGE))
+	sections := page.Sections()
+	sections_string := strings.Join(page.Sections(), ",")
+	if sections_string != expected_sections_string {
+		t.Errorf("Section should be %s, got: %s", expected_sections, sections)
+	}
+}
+
 func L(s ...string) []string {
 	return s
 }
